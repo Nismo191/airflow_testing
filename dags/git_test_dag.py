@@ -15,7 +15,6 @@ default_args = {
 
 
 with DAG(
-    'Git_Test_Dag',
     dag_id="git_test_dag",
     default_args=default_args,
     description='Testing',

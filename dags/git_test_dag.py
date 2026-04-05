@@ -1,7 +1,10 @@
 from airflow import DAG
+from airflow.decorators import task
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.sftp.hook.sftp import SFTPHook
+
 from datetime import datetime, timedelta
 
 
@@ -38,6 +41,17 @@ with DAG(
         cur.close()
         connection.close
 
+    @task
+    def test_sftp_conn():
+        sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
+
+        remote_path = "/"
+        files = sftp_hook.list_directory(remote_path)
+
+        print(files)
+
+        sftp_hook.close_conn()
+
 
 
     # Tasks
@@ -51,6 +65,7 @@ with DAG(
             python_callable=test_db
             )
 
+    test_sftp = test_sftp_conn()
 
 
-    start_task >> test_database
+    start_task >> test_database >> test_sftp

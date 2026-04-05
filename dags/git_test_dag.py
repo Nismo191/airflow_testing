@@ -32,7 +32,7 @@ with DAG(
     def test_db():
         pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
         connection = pg_hook.get_conn()
-        cur = connection.curson()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM testing")
         print(cur.fetchall())
         cur.close()

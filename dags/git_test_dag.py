@@ -3,7 +3,7 @@ from airflow.decorators import task
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.hooks.postgres_hook import PostgresHook
-from airflow.providers.sftp.hook.sftp import SFTPHook
+from airflow.providers.sftp.hooks.sftp import SFTPHook
 
 from datetime import datetime, timedelta
 

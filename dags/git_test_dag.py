@@ -30,7 +30,7 @@ with DAG(
 
 
     def test_db():
-        pg_hook = PostgresHook(postgres_conn_id='DO_PostGres', schema='airflow_db_connection')
+        pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
         connection = pg_hook.get_conn()
         cur = connection.curson()
         cur.execute("SELECT * FROM testing")

@@ -8,6 +8,11 @@ from airflow.providers.sftp.hooks.sftp import SFTPHook
 import pandas as pd
 
 from datetime import datetime, timedelta
+import os
+
+
+INPUT_DIR = "/home/nismo/data/"
+ARCHIVE_DIR = "/home/nismo/data/archive"
 
 
 default_args = {
@@ -47,10 +52,17 @@ with DAG(
     def test_sftp_conn():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
 
-        remote_path = "/home/data/"
         files = sftp_hook.list_directory(remote_path)
 
-        df = pd.read_csv(sftp_hook.retrieve_file(remote_path, files[0]))
+        remote_path = os.path.join(INPUT_DIR, files[0])
+        archive_path = os.path.join(ARCHIVE_DIR, files[0])
+        local_tmp_path = f"/tmp/{files[0]}"
+
+        sftp_hook.retrieve_file(remote_path, local_tmp_path)
+
+        df = pd.read_csv(local_tmp_path)
+
+        sftp_hook.rename(remote_path, archive_path)
 
         sftp_hook.close_conn()
 

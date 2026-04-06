@@ -5,6 +5,8 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.providers.sftp.hooks.sftp import SFTPHook
 
+import pandas as pd
+
 from datetime import datetime, timedelta
 
 
@@ -45,12 +47,14 @@ with DAG(
     def test_sftp_conn():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
 
-        remote_path = "/home/nismo/data/"
+        remote_path = "/home/data/"
         files = sftp_hook.list_directory(remote_path)
 
-        print(files)
+        df = pd.read_csv(sftp_hook.retrieve_file(remote_path, files[0]))
 
         sftp_hook.close_conn()
+
+        print(df.head)
 
 
 

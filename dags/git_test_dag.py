@@ -49,8 +49,9 @@ with DAG(
         connection.close
 
     @task
-    def test_sftp_conn():
+    def check_sftp_for_file():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
+        pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
 
         files = sftp_hook.list_directory(INPUT_DIR)
 
@@ -63,14 +64,27 @@ with DAG(
         sftp_hook.retrieve_file(remote_path, local_tmp_path)
 
         df = pd.read_csv(local_tmp_path)
+        df = df.rename(columns={
+            'col1': 'id',
+            'col2': 'name'
+        })
 
         sftp_hook.get_conn().rename(remote_path, archive_path)
 
         sftp_hook.close_conn()
 
-        print(df.head)
+        target_fields = df.columns.tolist()
+        rows = [tuple(x) for x in df.values]
 
+        pg_hook.insert_rows(
+            table="testing",
+            rows=rows,
+            target_fields=target_fields,
+            commit_every=1000
+        )
+        
 
+        
 
     # Tasks
     start_task = PythonOperator(
@@ -83,7 +97,7 @@ with DAG(
             python_callable=test_db
             )
 
-    test_sftp = test_sftp_conn()
+    test_sftp = check_sftp_for_file()
 
 
     start_task >> test_database >> test_sftp

@@ -58,6 +58,8 @@ with DAG(
         archive_path = os.path.join(ARCHIVE_DIR, files[0])
         local_tmp_path = f"/tmp/{files[0]}"
 
+        print(remote_path, archive_path, local_tmp_path)
+
         sftp_hook.retrieve_file(remote_path, local_tmp_path)
 
         df = pd.read_csv(local_tmp_path)

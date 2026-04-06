@@ -45,7 +45,7 @@ with DAG(
     def test_sftp_conn():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
 
-        remote_path = "/"
+        remote_path = "/home/"
         files = sftp_hook.list_directory(remote_path)
 
         print(files)

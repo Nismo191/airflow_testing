@@ -54,9 +54,9 @@ with DAG(
 
         files = sftp_hook.list_directory(INPUT_DIR)
 
-        remote_path = os.path.join(INPUT_DIR, files[0])
-        archive_path = os.path.join(ARCHIVE_DIR, files[0])
-        local_tmp_path = f"/tmp/{files[0]}"
+        remote_path = os.path.join(INPUT_DIR, files[1])
+        archive_path = os.path.join(ARCHIVE_DIR, files[1])
+        local_tmp_path = f"/tmp/{files[1]}"
 
         print(remote_path, archive_path, local_tmp_path)
 

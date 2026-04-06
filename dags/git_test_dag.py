@@ -64,7 +64,7 @@ with DAG(
 
         df = pd.read_csv(local_tmp_path)
 
-        sftp_hook.rename(remote_path, archive_path)
+        sftp_hook.get_conn().rename(remote_path, archive_path)
 
         sftp_hook.close_conn()
 

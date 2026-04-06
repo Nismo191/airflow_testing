@@ -52,7 +52,7 @@ with DAG(
     def test_sftp_conn():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
 
-        files = sftp_hook.list_directory(remote_path)
+        files = sftp_hook.list_directory(INPUT_DIR)
 
         remote_path = os.path.join(INPUT_DIR, files[0])
         archive_path = os.path.join(ARCHIVE_DIR, files[0])

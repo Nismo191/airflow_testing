@@ -15,6 +15,10 @@ INPUT_DIR = "/home/nismo/data/"
 ARCHIVE_DIR = "/home/nismo/data/archive"
 
 
+def 
+
+
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -23,8 +27,6 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(seconds=10),
 }
-
-
 
 with DAG(
     dag_id="git_test_dag",
@@ -80,7 +82,8 @@ with DAG(
             table="testing",
             rows=rows,
             target_fields=target_fields,
-            commit_every=1000
+            replace=True,
+            replace_index="id"
         )
         
 

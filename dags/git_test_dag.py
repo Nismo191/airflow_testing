@@ -55,11 +55,14 @@ with DAG(
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
         pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
 
-        files = sftp_hook.list_directory(INPUT_DIR)
+        items = sftp_hook.list_directory(INPUT_DIR)
 
-        remote_path = os.path.join(INPUT_DIR, files[1])
-        archive_path = os.path.join(ARCHIVE_DIR, files[1])
-        local_tmp_path = f"/tmp/{files[1]}"
+        for item in items:
+            print(sftp_hook.isfile(INPUT_DIR + item))
+
+        remote_path = os.path.join(INPUT_DIR, items[1])
+        archive_path = os.path.join(ARCHIVE_DIR, items[1])
+        local_tmp_path = f"/tmp/{items[1]}"
 
         print(remote_path, archive_path, local_tmp_path)
 

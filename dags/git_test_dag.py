@@ -58,7 +58,7 @@ with DAG(
         items = sftp_hook.list_directory(INPUT_DIR)
 
         for item in items:
-            if sftp_hook.isfile(INPUT_DIR + item) == False:
+            if sftp_hook.isfile(INPUT_DIR + item):
 
                 remote_path = os.path.join(INPUT_DIR, items[1])
                 archive_path = os.path.join(ARCHIVE_DIR, items[1])

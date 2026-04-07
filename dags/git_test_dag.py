@@ -58,38 +58,38 @@ with DAG(
         items = sftp_hook.list_directory(INPUT_DIR)
 
         for item in items:
-            print(sftp_hook.isfile(INPUT_DIR + item))
+            if sftp_hook.isfile(INPUT_DIR + item) == False:
 
-        remote_path = os.path.join(INPUT_DIR, items[1])
-        archive_path = os.path.join(ARCHIVE_DIR, items[1])
-        local_tmp_path = f"/tmp/{items[1]}"
+                remote_path = os.path.join(INPUT_DIR, items[1])
+                archive_path = os.path.join(ARCHIVE_DIR, items[1])
+                local_tmp_path = f"/tmp/{items[1]}"
 
-        print(remote_path, archive_path, local_tmp_path)
+                print(remote_path, archive_path, local_tmp_path)
 
-        sftp_hook.retrieve_file(remote_path, local_tmp_path)
+                sftp_hook.retrieve_file(remote_path, local_tmp_path)
 
-        df = pd.read_csv(local_tmp_path)
-        df = df.rename(columns={
-            'col1': 'id',
-            'col2': 'name'
-        })
+                df = pd.read_csv(local_tmp_path)
+                df = df.rename(columns={
+                    'col1': 'id',
+                    'col2': 'name'
+                })
 
-        sftp_hook.get_conn().rename(remote_path, archive_path)
+                sftp_hook.get_conn().rename(remote_path, archive_path)
 
-        sftp_hook.close_conn()
+                
 
-        target_fields = df.columns.tolist()
-        rows = [tuple(x) for x in df.values]
+                target_fields = df.columns.tolist()
+                rows = [tuple(x) for x in df.values]
 
-        pg_hook.insert_rows(
-            table="testing",
-            rows=rows,
-            target_fields=target_fields,
-            replace=True,
-            replace_index="id"
-        )
+                pg_hook.insert_rows(
+                    table="testing",
+                    rows=rows,
+                    target_fields=target_fields,
+                    replace=True,
+                    replace_index="id"
+                )
         
-
+        sftp_hook.close_conn()
         
 
     # Tasks

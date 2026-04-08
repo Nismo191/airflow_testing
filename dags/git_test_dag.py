@@ -1,22 +1,18 @@
 from airflow import DAG
 from airflow.decorators import task
-from airflow.operators.python_operator import PythonOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.operators.python import PythonOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.providers.sftp.hooks.sftp import SFTPHook
 
 import pandas as pd
 
+import stat
 from datetime import datetime, timedelta
 import os
 
 
 INPUT_DIR = "/home/nismo/data/"
 ARCHIVE_DIR = "/home/nismo/data/archive"
-
-
-
-
 
 
 default_args = {
@@ -32,7 +28,7 @@ with DAG(
     dag_id="git_test_dag",
     default_args=default_args,
     description='Testing',
-    schedule_interval=timedelta(days=1),
+    schedule=timedelta(days=1),
     catchup=False,
 ) as dag:
 
@@ -43,22 +39,20 @@ with DAG(
 
     def test_db():
         pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
-        connection = pg_hook.get_conn()
-        cur = connection.cursor()
-        cur.execute("SELECT * FROM testing")
-        print(cur.fetchall())
-        cur.close()
-        connection.close
+        records = pg_hook.get_records("SELECT * FROM testing")
+        print(records)
 
     @task
     def check_sftp_for_file():
         sftp_hook = SFTPHook(ssh_conn_id="Ubuntu_Dev_SFTP")
         pg_hook = PostgresHook(postgres_conn_id='DO_PostGres')
+        sftp_client = sftp_hook.get_conn()
 
         items = sftp_hook.list_directory(INPUT_DIR)
 
         for item in items:
-            if sftp_hook.isfile(INPUT_DIR + item):
+            file_stat = sftp_client.stat(INPUT_DIR + item)
+            if stat.S_ISREG(file_stat.st_mode):
 
                 remote_path = os.path.join(INPUT_DIR, items[1])
                 archive_path = os.path.join(ARCHIVE_DIR, items[1])
@@ -76,7 +70,8 @@ with DAG(
 
                 sftp_hook.get_conn().rename(remote_path, archive_path)
 
-                
+                if os.path.exists(local_tmp_path):
+                    os.remove(local_tmp_path)
 
                 target_fields = df.columns.tolist()
                 rows = [tuple(x) for x in df.values]
@@ -90,6 +85,7 @@ with DAG(
                 )
         
         sftp_hook.close_conn()
+
         
 
     # Tasks

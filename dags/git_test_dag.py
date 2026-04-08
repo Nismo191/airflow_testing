@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.decorators import task
+from airflow.sdk.task import task
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.sftp.hooks.sftp import SFTPHook
@@ -35,6 +35,7 @@ with DAG(
     # Functions
     def print_start():
         print("Starting ETL process")
+        return 200
 
 
     def test_db():

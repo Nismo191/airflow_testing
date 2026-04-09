@@ -37,7 +37,7 @@ def main():
 
 
     
-    print_start() > print_something() > print_end()
+    print_start() >> print_something() >> print_end()
 
 
 main()

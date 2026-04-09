@@ -28,8 +28,16 @@ def main():
         print("Starting")
 
     @task
-    def print_something():
-        print("Something")
+    def print_something1():
+        print("Something1")
+
+    @task
+    def print_something2():
+        print("Something2")
+
+    @task
+    def print_something3():
+        print("Something3")   
 
     @task
     def print_end():
@@ -37,7 +45,7 @@ def main():
 
 
     
-    print_start() >> print_something() >> print_end()
+    print_start() >> [print_something1, print_something2, print_something3] >> print_end()
 
 
 main()

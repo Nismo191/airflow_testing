@@ -45,7 +45,7 @@ def main():
 
 
     
-    print_start() >> [print_something1, print_something2, print_something3] >> print_end()
+    print_start() >> [print_something1(), print_something2(), print_something3()] >> print_end()
 
 
 main()

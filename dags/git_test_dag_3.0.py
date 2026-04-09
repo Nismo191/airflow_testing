@@ -37,7 +37,7 @@ def main():
 
 
     
-    print_task = print_start() > print_something = print_something() > print_end = print_end()
+    print_start() > print_something() > print_end()
 
 
 main()

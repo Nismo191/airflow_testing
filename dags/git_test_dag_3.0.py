@@ -27,9 +27,19 @@ def main():
     def print_start():
         print("Starting")
 
+    @task
+    def print_something():
+        print("Something")
+
+    @task
+    def print_end():
+        print("End")
+
 
     
     print_task = print_start()
+    print_something = print_something()
+    print_end = print_end()
 
 
 main()
